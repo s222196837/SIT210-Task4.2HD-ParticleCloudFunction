@@ -2,33 +2,37 @@
 <html>
 <body>
 
-    <h1>Traffic Light Buttons</h1>
+    <h1>Traffic Light</h1>
 
-    <input type="text" id="device" name="device" value="e00fce687bfb244f989cb041">DEVICE:
-    <input type="text" id="apikey" name="apikey" value="e11ba274c744080ba562edf667fcbfcfde057f4c">APIKEY:
+    <label for="device">Device:</label>
+    <input type="text" id="device" name="device" value="e00fce687bfb244f989cb041">
+    <br><br>
+    <label for="apikey">API Key:</label>
+    <input type="text" id="apikey" name="apikey" value="e11ba274c744080ba562edf667fcbfcfde057f4c">
     <br>
     <p>Colour:</p>
     <input type="radio" id="red" name="colour" value="red">Red
-    <label for="red">Red</label><br>
-    <input type="radio" id="blue" name="colour" value="blue">Green
-    <label for="blue">Blue</label><br>
-    <input type="radio" id="green" name="colour" value="green">Blue
-    <br>
+    <input type="radio" id="blue" name="colour" value="blue">Blue
+    <input type="radio" id="green" name="colour" value="green">Green
+    <br><br>
     <button type="button" onclick="postUpdate()">Update</button>
-    <br>
+    <br><br>
 
-    <div id="result"></div>
-
-    <script>
+    <script language="javascript">
         function postUpdate() {
-            var device = document.getElementsByName('device').value;
-            var apikey = document.getElementsByName('apikey').value;
+            var device = document.getElementById('device').value;
+            var apikey = document.getElementById('apikey').value;
             var colour = document.getElementsByName('colour');
             for (i = 0; i < colour.length; i++) {
                 if (colour[i].checked) {
-                    let value = colour[i].value;
-                    $.post(`https://api.particle.io/v1/devices/${device}/colour`, {access_token:`${apikey}`,args:`${value}`}, function(data, code) { console.log(`${data} and status is ${code}`) });
-                    break;
+                    var value = colour[i].value;
+                    fetch(`https://api.particle.io/v1/devices/${device}/colour`, {
+                        method: "POST",
+                        headers: {'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `access_token=${apikey}&args=${value}`
+                    }).then(response => {
+                        console.log("Request complete; response:", response);
+                    });
                 }
             }
         }
